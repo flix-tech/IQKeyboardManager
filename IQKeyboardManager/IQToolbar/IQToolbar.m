@@ -68,6 +68,7 @@ Class IQUIToolbarButtonClass;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth;// | UIViewAutoresizingFlexibleHeight;
     self.translucent = YES;
     [self setTintColor:[UIColor blackColor]];
+    self.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
