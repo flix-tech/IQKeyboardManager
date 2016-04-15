@@ -100,6 +100,31 @@
     
     [[self appearance] setBackButtonTitlePositionAdjustment:UIOffsetZero forBarMetrics:UIBarMetricsDefault];
     [[self appearance] setBackButtonBackgroundVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
+    
+#ifdef __IPHONE_8_0
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_0
+    
+    if (IQ_IS_IOS8_OR_GREATER)
+    {
+        [[self appearance] setBackgroundImage:nil forState:UIControlStateNormal         style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+        [[self appearance] setBackgroundImage:nil forState:UIControlStateHighlighted    style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+        [[self appearance] setBackgroundImage:nil forState:UIControlStateDisabled       style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+        [[self appearance] setBackgroundImage:nil forState:UIControlStateSelected       style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+        [[self appearance] setBackgroundImage:nil forState:UIControlStateApplication    style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+        [[self appearance] setBackgroundImage:nil forState:UIControlStateReserved       style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+    }
+    
+#endif
+    
+#else
+    [[self appearance] setBackgroundImage:nil forState:UIControlStateNormal         style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+    [[self appearance] setBackgroundImage:nil forState:UIControlStateHighlighted    style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+    [[self appearance] setBackgroundImage:nil forState:UIControlStateDisabled       style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+    [[self appearance] setBackgroundImage:nil forState:UIControlStateSelected       style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+    [[self appearance] setBackgroundImage:nil forState:UIControlStateApplication    style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+    [[self appearance] setBackgroundImage:nil forState:UIControlStateReserved       style:UIBarButtonItemStyleBordered barMetrics:UIBarMetricsDefault];
+#endif
+
 }
 
 @end

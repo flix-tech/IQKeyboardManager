@@ -1,7 +1,7 @@
 //
 //  UIView+IQToolbar.m
 // https://github.com/hackiftekhar/IQKeyboardManager
-// Copyright (c) 2013-15 Iftekhar Qurashi.
+// Copyright (c) 2013-16 Iftekhar Qurashi.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -411,7 +411,8 @@
     //        UIBarButtonItem *next = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:106 target:target action:nextAction];
     
 #ifdef __IPHONE_8_0
-    #if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_8_0    //Minimum Target iOS 8+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_8_0    //Minimum Target iOS 8+
+
     
     // Get the top level "bundle" which may actually be the framework
     NSBundle *mainBundle = [NSBundle bundleForClass:[IQKeyboardManager class]];
@@ -425,11 +426,12 @@
     
     UIImage *imageLeftArrow = [UIImage imageNamed:@"IQButtonBarArrowLeft" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
     UIImage *imageRightArrow = [UIImage imageNamed:@"IQButtonBarArrowRight" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
-    #else   //Minimum Target iOS7+
-
+    
+#else   //Minimum Target iOS7+
+    
     UIImage *imageLeftArrow;
     UIImage *imageRightArrow;
-
+    
     if (IQ_IS_IOS8_OR_GREATER)
     {
         // Get the top level "bundle" which may actually be the framework
@@ -450,13 +452,22 @@
         imageLeftArrow = [UIImage imageNamed:@"IQKeyboardManager.bundle/IQButtonBarArrowLeft"];
         imageRightArrow = [UIImage imageNamed:@"IQKeyboardManager.bundle/IQButtonBarArrowRight"];
     }
-
-    #endif
+    
+#endif
     
 #else   //Maximum target iOS 7
     UIImage *imageLeftArrow = [UIImage imageNamed:@"IQKeyboardManager.bundle/IQButtonBarArrowLeft"];
     UIImage *imageRightArrow = [UIImage imageNamed:@"IQKeyboardManager.bundle/IQButtonBarArrowRight"];
 #endif
+
+    
+    //Support for RTL languages like Arabic, Persia etc... (Bug ID: #448)
+    if ([UIImage instancesRespondToSelector:@selector(imageFlippedForRightToLeftLayoutDirection)])
+    {
+        imageLeftArrow = [imageLeftArrow imageFlippedForRightToLeftLayoutDirection];
+        imageRightArrow = [imageRightArrow imageFlippedForRightToLeftLayoutDirection];
+    }
+    
     
     //Previous button
     IQBarButtonItem *prev = [[IQBarButtonItem alloc] initWithImage:imageLeftArrow style:UIBarButtonItemStylePlain target:target action:previousAction];
@@ -529,6 +540,7 @@
     
 #ifdef __IPHONE_8_0
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_8_0    //Minimum Target iOS 8+
+
     
     // Get the top level "bundle" which may actually be the framework
     NSBundle *mainBundle = [NSBundle bundleForClass:[IQKeyboardManager class]];
@@ -542,6 +554,8 @@
     
     UIImage *imageLeftArrow = [UIImage imageNamed:@"IQButtonBarArrowLeft" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
     UIImage *imageRightArrow = [UIImage imageNamed:@"IQButtonBarArrowRight" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
+#else   //Minimum Target iOS7+
+    
 #else   //Minimum Target iOS7+
     
     UIImage *imageLeftArrow;
@@ -574,6 +588,14 @@
     UIImage *imageLeftArrow = [UIImage imageNamed:@"IQKeyboardManager.bundle/IQButtonBarArrowLeft"];
     UIImage *imageRightArrow = [UIImage imageNamed:@"IQKeyboardManager.bundle/IQButtonBarArrowRight"];
 #endif
+
+    
+    //Support for RTL languages like Arabic, Persia etc... (Bug ID: #448)
+    if ([UIImage instancesRespondToSelector:@selector(imageFlippedForRightToLeftLayoutDirection)])
+    {
+        imageLeftArrow = [imageLeftArrow imageFlippedForRightToLeftLayoutDirection];
+        imageRightArrow = [imageRightArrow imageFlippedForRightToLeftLayoutDirection];
+    }
     
     //Previous button
     IQBarButtonItem *prev = [[IQBarButtonItem alloc] initWithImage:imageLeftArrow style:UIBarButtonItemStylePlain target:target action:previousAction];
@@ -642,6 +664,8 @@
 #ifdef __IPHONE_8_0
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_8_0    //Minimum Target iOS 8+
     
+
+    
     // Get the top level "bundle" which may actually be the framework
     NSBundle *mainBundle = [NSBundle bundleForClass:[IQKeyboardManager class]];
     
@@ -654,6 +678,8 @@
     
     UIImage *imageLeftArrow = [UIImage imageNamed:@"IQButtonBarArrowLeft" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
     UIImage *imageRightArrow = [UIImage imageNamed:@"IQButtonBarArrowRight" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
+#else   //Minimum Target iOS7+
+    
 #else   //Minimum Target iOS7+
     
     UIImage *imageLeftArrow;
@@ -680,12 +706,20 @@
         imageRightArrow = [UIImage imageNamed:@"IQKeyboardManager.bundle/IQButtonBarArrowRight"];
     }
     
-    #endif
+#endif
     
 #else   //Maximum target iOS 7
     UIImage *imageLeftArrow = [UIImage imageNamed:@"IQKeyboardManager.bundle/IQButtonBarArrowLeft"];
     UIImage *imageRightArrow = [UIImage imageNamed:@"IQKeyboardManager.bundle/IQButtonBarArrowRight"];
 #endif
+
+    
+    //Support for RTL languages like Arabic, Persia etc... (Bug ID: #448)
+    if ([UIImage instancesRespondToSelector:@selector(imageFlippedForRightToLeftLayoutDirection)])
+    {
+        imageLeftArrow = [imageLeftArrow imageFlippedForRightToLeftLayoutDirection];
+        imageRightArrow = [imageRightArrow imageFlippedForRightToLeftLayoutDirection];
+    }
     
     //Previous button
     IQBarButtonItem *prev = [[IQBarButtonItem alloc] initWithImage:imageLeftArrow style:UIBarButtonItemStylePlain target:target action:previousAction];

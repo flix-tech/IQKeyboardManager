@@ -122,6 +122,12 @@ extern NSInteger const kIQPreviousNextButtonToolbarTag;
  */
 @property(nullable, nonatomic, strong) UIFont *placeholderFont;
 
+
+/**
+ Reload all toolbar buttons on the fly.
+ */
+- (void)reloadInputViews;
+
 ///--------------------------
 /// @name UITextView handling
 ///--------------------------
