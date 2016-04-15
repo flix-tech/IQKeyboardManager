@@ -556,8 +556,6 @@
     UIImage *imageRightArrow = [UIImage imageNamed:@"IQButtonBarArrowRight" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
 #else   //Minimum Target iOS7+
     
-#else   //Minimum Target iOS7+
-    
     UIImage *imageLeftArrow;
     UIImage *imageRightArrow;
     
@@ -678,8 +676,6 @@
     
     UIImage *imageLeftArrow = [UIImage imageNamed:@"IQButtonBarArrowLeft" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
     UIImage *imageRightArrow = [UIImage imageNamed:@"IQButtonBarArrowRight" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
-#else   //Minimum Target iOS7+
-    
 #else   //Minimum Target iOS7+
     
     UIImage *imageLeftArrow;
