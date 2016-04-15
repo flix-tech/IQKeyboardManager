@@ -45,4 +45,11 @@ typedef NS_ENUM(NSInteger, IQLayoutGuidePosition) {
     IQLayoutGuidePositionBottom,
 };
 
+//Xcode 6 compatibility check
+#ifdef NSFoundationVersionNumber_iOS_7_1
+    #define IQ_IS_IOS8_OR_GREATER (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1)
+#else
+    #define IQ_IS_IOS8_OR_GREATER NO
+#endif
+
 #endif
