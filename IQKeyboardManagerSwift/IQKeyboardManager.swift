@@ -781,13 +781,6 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
     /** To save UITextField/UITextView object voa textField/textView notifications. */
     private weak var    _textFieldView: UIView?
     
-    /** To save rootViewController.view.frame.origin. */
-    private var         _topViewBeginOrigin = IQKeyboardManager.kIQCGPointInvalid
-
-    /** To overcome with popGestureRecognizer issue Bug ID: #1361 */
-    private weak var    _rootViewControllerWhilePopGestureRecognizerActive: UIViewController?
-    private var         _topViewBeginOriginWhilePopGestureRecognizerActive = IQKeyboardManager.kIQCGPointInvalid
-
     /** To save rootViewController */
     private weak var    _rootViewController: UIViewController?
     
@@ -936,9 +929,6 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
             let textFieldViewRectInRootSuperview = textFieldView.superview?.convert(textFieldView.frame, to: rootController.view?.superview) {
             let startTime = CACurrentMediaTime()
             showLog("****** \(#function) started ******", indentation: 1)
-            
-            //  Getting RootViewOrigin.
-            var rootViewOrigin = rootController.view.frame.origin
             
             //Maintain keyboardDistanceFromTextField
             var specialKeyboardDistanceFromTextField = textFieldView.keyboardDistanceFromTextField
@@ -1336,111 +1326,9 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
                     }
                 }
             }
-                
-            //  +Positive or zero.
-            if move >= 0 {
-                
-                rootViewOrigin.y = max(rootViewOrigin.y - move, min(0, -(kbSize.height-newKeyboardDistanceFromTextField)))
 
-                if rootController.view.frame.origin.equalTo(rootViewOrigin) == false {
-                    showLog("Moving Upward")
-                    
-                    UIView.animate(withDuration: _animationDuration, delay: 0, options: _animationCurve.union(.beginFromCurrentState), animations: { () -> Void in
-                        
-                        var rect = rootController.view.frame
-                        rect.origin = rootViewOrigin
-                        rootController.view.frame = rect
-                        
-                        //Animating content if needed (Bug ID: #204)
-                        if self.layoutIfNeededOnUpdate == true {
-                            //Animating content (Bug ID: #160)
-                            rootController.view.setNeedsLayout()
-                            rootController.view.layoutIfNeeded()
-                        }
-                        
-                        self.showLog("Set \(rootController) origin to: \(rootViewOrigin)")
-                    })
-                }
-                
-                _privateMovedDistance = (_topViewBeginOrigin.y-rootViewOrigin.y)
-            } else {  //  -Negative
-                let disturbDistance: CGFloat = rootViewOrigin.y-_topViewBeginOrigin.y
-                
-                //  disturbDistance Negative = frame disturbed.
-                //  disturbDistance positive = frame not disturbed.
-                if disturbDistance <= 0 {
-                    
-                    rootViewOrigin.y -= max(move, disturbDistance)
-                    
-                    if rootController.view.frame.origin.equalTo(rootViewOrigin) == false {
-                        showLog("Moving Downward")
-                        //  Setting adjusted rootViewRect
-                        //  Setting adjusted rootViewRect
-                        
-                        UIView.animate(withDuration: _animationDuration, delay: 0, options: _animationCurve.union(.beginFromCurrentState), animations: { () -> Void in
-                            
-                            var rect = rootController.view.frame
-                            rect.origin = rootViewOrigin
-                            rootController.view.frame = rect
-                            
-                            //Animating content if needed (Bug ID: #204)
-                            if self.layoutIfNeededOnUpdate == true {
-                                //Animating content (Bug ID: #160)
-                                rootController.view.setNeedsLayout()
-                                rootController.view.layoutIfNeeded()
-                            }
-                            
-                            self.showLog("Set \(rootController) origin to: \(rootViewOrigin)")
-                        })
-                    }
-                    
-                    _privateMovedDistance = (_topViewBeginOrigin.y-rootViewOrigin.y)
-                }
-            }
-        
             let elapsedTime = CACurrentMediaTime() - startTime
             showLog("****** \(#function) ended: \(elapsedTime) seconds ******", indentation: -1)
-        }
-    }
-
-    private func restorePosition() {
-        
-        _privateHasPendingAdjustRequest = false
-        
-        //  Setting rootViewController frame to it's original position. //  (Bug ID: #18)
-        if _topViewBeginOrigin.equalTo(IQKeyboardManager.kIQCGPointInvalid) == false {
-            
-            if let rootViewController = _rootViewController {
-                
-                if rootViewController.view.frame.origin.equalTo(self._topViewBeginOrigin) == false {
-                    //Used UIViewAnimationOptionBeginFromCurrentState to minimize strange animations.
-                    UIView.animate(withDuration: _animationDuration, delay: 0, options: _animationCurve.union(.beginFromCurrentState), animations: { () -> Void in
-                        
-                        self.showLog("Restoring \(rootViewController) origin to: \(self._topViewBeginOrigin)")
-                        
-                        //  Setting it's new frame
-                        var rect = rootViewController.view.frame
-                        rect.origin = self._topViewBeginOrigin
-                        rootViewController.view.frame = rect
-                        
-                        //Animating content if needed (Bug ID: #204)
-                        if self.layoutIfNeededOnUpdate == true {
-                            //Animating content (Bug ID: #160)
-                            rootViewController.view.setNeedsLayout()
-                            rootViewController.view.layoutIfNeeded()
-                        }
-                    })
-                }
-                
-                self._privateMovedDistance = 0
-                
-                if rootViewController.navigationController?.interactivePopGestureRecognizer?.state == .began {
-                    self._rootViewControllerWhilePopGestureRecognizerActive = rootViewController
-                    self._topViewBeginOriginWhilePopGestureRecognizerActive = self._topViewBeginOrigin
-                }
-                
-                _rootViewController = nil
-            }
         }
     }
 
@@ -1453,7 +1341,6 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
 
         if privateIsEnabled() == true {
             if _privateIsKeyboardShowing == true,
-                _topViewBeginOrigin.equalTo(IQKeyboardManager.kIQCGPointInvalid) == false,
                 let textFieldView = _textFieldView,
                 textFieldView.isAlertViewTextField() == false {
                 optimizedAdjustPosition()
@@ -1519,26 +1406,6 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
         
         let startTime = CACurrentMediaTime()
         showLog("****** \(#function) started ******", indentation: 1)
-
-        //  (Bug ID: #5)
-        if let textFieldView = _textFieldView, _topViewBeginOrigin.equalTo(IQKeyboardManager.kIQCGPointInvalid) == true {
-            
-            //  keyboard is not showing(At the beginning only). We should save rootViewRect.
-            _rootViewController = textFieldView.parentContainerViewController()
-            if let controller = _rootViewController {
-                
-                if _rootViewControllerWhilePopGestureRecognizerActive == controller {
-                    _topViewBeginOrigin = _topViewBeginOriginWhilePopGestureRecognizerActive
-                } else {
-                    _topViewBeginOrigin = controller.view.frame.origin
-                }
-
-                _rootViewControllerWhilePopGestureRecognizerActive = nil
-                _topViewBeginOriginWhilePopGestureRecognizerActive = IQKeyboardManager.kIQCGPointInvalid
-                
-                self.showLog("Saving \(controller) beginning origin: \(self._topViewBeginOrigin)")
-            }
-        }
 
         //If last restored keyboard size is different(any orientation accure), then refresh. otherwise not.
         if _kbFrame.equalTo(oldKBFrame) == false {
@@ -1682,8 +1549,8 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
             })
         }
         
-        restorePosition()
-        
+        _privateHasPendingAdjustRequest = false
+
         //Reset all values
         _lastScrollView = nil
         _kbFrame = CGRect.zero
@@ -1700,8 +1567,6 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
 
         let startTime = CACurrentMediaTime()
         showLog("****** \(#function) started ******", indentation: 1)
-        
-        _topViewBeginOrigin = IQKeyboardManager.kIQCGPointInvalid
         
         _kbFrame = CGRect.zero
 
@@ -1769,25 +1634,6 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
         _textFieldView?.window?.addGestureRecognizer(resignFirstResponderGesture)    //   (Enhancement ID: #14)
 
         if privateIsEnabled() == true {
-            if _topViewBeginOrigin.equalTo(IQKeyboardManager.kIQCGPointInvalid) == true {    //  (Bug ID: #5)
-                
-                _rootViewController = _textFieldView?.parentContainerViewController()
-
-                if let controller = _rootViewController {
-                    
-                    if _rootViewControllerWhilePopGestureRecognizerActive == controller {
-                        _topViewBeginOrigin = _topViewBeginOriginWhilePopGestureRecognizerActive
-                    } else {
-                        _topViewBeginOrigin = controller.view.frame.origin
-                    }
-                    
-                    _rootViewControllerWhilePopGestureRecognizerActive = nil
-                    _topViewBeginOriginWhilePopGestureRecognizerActive = IQKeyboardManager.kIQCGPointInvalid
-
-                    self.showLog("Saving \(controller) beginning origin: \(self._topViewBeginOrigin)")
-                }
-            }
-            
             //If _textFieldView is inside ignored responder then do nothing. (Bug ID: #37, #74, #76)
             //See notes:- https://developer.apple.com/library/ios/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/KeyboardManagement/KeyboardManagement.html If it is UIAlertView textField then do not affect anything (Bug ID: #70).
             if _privateIsKeyboardShowing == true,
@@ -1886,7 +1732,7 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
             }
         }
 
-        restorePosition()
+        _privateHasPendingAdjustRequest = false
 
         let elapsedTime = CACurrentMediaTime() - startTime
         showLog("****** \(#function) ended: \(elapsedTime) seconds ******", indentation: -1)
