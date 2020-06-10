@@ -961,7 +961,7 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
             let statusBarHeight : CGFloat
             
             #if swift(>=5.1)
-            if #available(iOS 13, *) {
+            if #available(iOS 13, *), UIWindow.instancesRespond(to: #selector(getter: UIWindow.windowScene)) {
                 statusBarHeight = window.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
             } else {
                 statusBarHeight = UIApplication.shared.statusBarFrame.height
@@ -1695,7 +1695,7 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
 
         let currentStatusBarOrientation : UIInterfaceOrientation
         #if swift(>=5.1)
-        if #available(iOS 13, *) {
+        if #available(iOS 13, *), UIWindow.instancesRespond(to: #selector(getter: UIWindow.windowScene)) {
             currentStatusBarOrientation = keyWindow()?.windowScene?.interfaceOrientation ?? UIInterfaceOrientation.unknown
         } else {
             currentStatusBarOrientation = UIApplication.shared.statusBarOrientation
